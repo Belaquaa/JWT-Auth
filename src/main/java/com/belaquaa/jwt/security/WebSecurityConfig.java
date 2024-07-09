@@ -4,7 +4,6 @@ import com.belaquaa.jwt.security.jwt.AuthEntryPointJwt;
 import com.belaquaa.jwt.security.jwt.AuthTokenFilter;
 import com.belaquaa.jwt.security.services.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
