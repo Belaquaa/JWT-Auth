@@ -1,4 +1,4 @@
-package com.belaquaa.jwt.security.services;
+package com.belaquaa.jwt.security.service;
 
 import com.belaquaa.jwt.model.User;
 import com.belaquaa.jwt.repository.UserRepository;

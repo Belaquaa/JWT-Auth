@@ -1,4 +1,4 @@
-package com.belaquaa.jwt.controllers;
+package com.belaquaa.jwt.security;
 
 import com.belaquaa.jwt.model.Role;
 import com.belaquaa.jwt.model.Roles;
@@ -10,28 +10,24 @@ import com.belaquaa.jwt.payload.response.MessageResponse;
 import com.belaquaa.jwt.repository.RoleRepository;
 import com.belaquaa.jwt.repository.UserRepository;
 import com.belaquaa.jwt.security.jwt.JwtUtils;
-import com.belaquaa.jwt.security.services.UserDetailsImpl;
-import jakarta.validation.Valid;
+import com.belaquaa.jwt.security.service.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
-@RestController
-@RequestMapping("/api/auth")
+@Service
 @RequiredArgsConstructor
-public class AuthController {
+public class UserService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
@@ -39,8 +35,7 @@ public class AuthController {
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public JwtResponse authenticateUser(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.email(), loginRequest.password()));
 
@@ -52,25 +47,18 @@ public class AuthController {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getAge(),
-                userDetails.getEmail(),
-                roles));
+        return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getAge(), userDetails.getEmail(), roles);
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public MessageResponse registerUser(SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.username())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+            return new MessageResponse("Error: Username is already taken!");
         }
 
         if (userRepository.existsByEmail(signUpRequest.email())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+            return new MessageResponse("Error: Email is already in use!");
         }
 
-        // Create new user's account
         User user = new User(signUpRequest.username(),
                 signUpRequest.age(),
                 signUpRequest.email(),
@@ -80,7 +68,7 @@ public class AuthController {
         user.setRoles(roles);
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return new MessageResponse("User registered successfully!");
     }
 
     private Set<Role> resolveRoles(Set<String> strRoles) {

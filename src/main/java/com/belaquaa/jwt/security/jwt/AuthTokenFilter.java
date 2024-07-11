@@ -1,6 +1,6 @@
 package com.belaquaa.jwt.security.jwt;
 
-import com.belaquaa.jwt.security.services.UserDetailsServiceImpl;
+import com.belaquaa.jwt.security.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

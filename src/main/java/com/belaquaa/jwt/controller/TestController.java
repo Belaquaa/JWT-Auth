@@ -1,13 +1,11 @@
-package com.belaquaa.jwt.controllers;
+package com.belaquaa.jwt.controller;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -47,6 +45,12 @@ public class TestController {
     public ResponseEntity<ApiResponse> adminAccess() {
         logger.info("Accessing admin content");
         return ResponseEntity.ok(new ApiResponse("Admin Board."));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse> handleAccessDeniedException(AccessDeniedException ex) {
+        logger.error("Access denied exception caught: {}", ex.getMessage());
+        return new ResponseEntity<>(new ApiResponse("Access Denied: " + ex.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)

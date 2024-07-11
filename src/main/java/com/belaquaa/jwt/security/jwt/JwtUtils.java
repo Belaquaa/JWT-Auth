@@ -1,7 +1,9 @@
 package com.belaquaa.jwt.security.jwt;
 
-import com.belaquaa.jwt.security.services.UserDetailsImpl;
-import io.jsonwebtoken.*;
+import com.belaquaa.jwt.security.service.UserDetailsImpl;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
