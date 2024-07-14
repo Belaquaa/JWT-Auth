@@ -18,44 +18,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/test")
 public class TestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
-
     @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ApiResponse> allAccess() {
-        logger.info("Accessing public content");
         return ResponseEntity.ok(new ApiResponse("Public Content."));
     }
 
     @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> userAccess() {
-        logger.info("Accessing user content");
         return ResponseEntity.ok(new ApiResponse("User Content."));
     }
 
     @GetMapping(value = "/mod", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MODERATOR')")
     public ResponseEntity<ApiResponse> moderatorAccess() {
-        logger.info("Accessing moderator content");
         return ResponseEntity.ok(new ApiResponse("Moderator Board."));
     }
 
     @GetMapping(value = "/admin", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> adminAccess() {
-        logger.info("Accessing admin content");
         return ResponseEntity.ok(new ApiResponse("Admin Board."));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse> handleAccessDeniedException(AccessDeniedException ex) {
-        logger.error("Access denied exception caught: {}", ex.getMessage());
         return new ResponseEntity<>(new ApiResponse("Access Denied: " + ex.getMessage()), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleException(Exception ex) {
-        logger.error("Exception caught: {}", ex.getMessage(), ex);
         return new ResponseEntity<>(new ApiResponse("An error occurred: " + ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

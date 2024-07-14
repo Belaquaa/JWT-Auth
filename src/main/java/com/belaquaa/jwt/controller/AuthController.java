@@ -24,13 +24,11 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        JwtResponse jwtResponse = userService.authenticateUser(loginRequest);
-        return ResponseEntity.ok(jwtResponse);
+        return ResponseEntity.ok(userService.authenticateUser(loginRequest));
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        MessageResponse messageResponse = userService.registerUser(signUpRequest);
-        return ResponseEntity.ok(messageResponse);
+        return ResponseEntity.ok(userService.registerUser(signUpRequest));
     }
 }
